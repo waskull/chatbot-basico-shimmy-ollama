@@ -48,15 +48,6 @@ class ChatbotView(APIView):
             "=== INSTRUCCIÓN ===\n"
             "Responde solo con información del contexto. Sé claro, conciso y emite la respuesta en texto plano.\n"
         )
-        #prompt += "\nHistorial relevante:"
-        #historial = Conversacion.objects.filter(usuario=request.user)[:5]
-        #if historial.exists():
-        #    historial_aplanado = ""
-        #    historial_aplanado += "\n".join([f"Usuario: {h.pregunta}\nAsistente: {h.respuesta}" for h in historial])
-        #    prompt += historial_aplanado
-        #else:
-        #    prompt += "\nSin historial previo relevante.\n"
-        
         temperatura = serializer.validated_data.get("temperatura", 0.8)
         modelo = serializer.validated_data.get("modelo", settings.MODEL_NAME)
         try:
@@ -64,10 +55,6 @@ class ChatbotView(APIView):
             print("Prompt:", prompt)
             print("Engine:", engine)
             respuesta = generar_respuesta(prompt, modelo, temperatura)
-            """ if engine == "llamacpp":
-                respuesta = generar_respuesta_llamacpp(prompt,512, temperatura)
-            else: 
-                respuesta = generar_respuesta(prompt, modelo, temperatura) """
             print("Respuesta:", respuesta)
             LISTA_ERROR = ["No puedo responder a esa pregunta.", "No puedo responder a tu pregunta.", "No puedo responder a tu pregunta", ""]
             if respuesta or respuesta not in LISTA_ERROR:
@@ -111,3 +98,4 @@ class ChatbotDetailView(APIView):
             return Response(
                 {'error': str(e)},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
